@@ -716,16 +716,16 @@ main,.foot{position:relative;z-index:2}
     mmStatus.textContent = ''; mm.hidden = false;
   }
   function closeMM(){ mm.hidden = true; }
-  var ty = document.getElementById('ty');
+  var thanksBox = document.getElementById('ty');
   function openTY(){
-    ty.hidden = false;
+    thanksBox.hidden = false;
     try { document.getElementById('ty-ok').focus(); } catch (err) {}
-    setTimeout(function(){ var r = ty.getBoundingClientRect(); if (ty.hidden || r.width < 50 || r.height < 50) alert('Thank you! Your enquiry has been sent. We will reply soon.'); }, 400);
+    setTimeout(function(){ var r = thanksBox.getBoundingClientRect(); if (thanksBox.hidden || r.width < 50 || r.height < 50) alert('Thank you! Your enquiry has been sent. We will reply soon.'); }, 400);
   }
-  function closeTY(){ ty.hidden = true; }
+  function closeTY(){ thanksBox.hidden = true; }
   document.getElementById('ty-x').addEventListener('click', closeTY);
   document.getElementById('ty-ok').addEventListener('click', closeTY);
-  ty.addEventListener('click', function(e){ if (e.target === ty) closeTY(); });
+  thanksBox.addEventListener('click', function(e){ if (e.target === thanksBox) closeTY(); });
   mail.addEventListener('click', function(){
     var left = false;
     function gone(){ left = true; }
