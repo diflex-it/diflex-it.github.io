@@ -432,10 +432,12 @@ main,.foot{position:relative;z-index:2}
         <div class="field"><label for="f-note">Tell us more</label><textarea id="f-note" placeholder="What does your business do, and what should the system fix?"></textarea></div>
         <div class="field"><label for="f-out">Your message</label><textarea id="f-out" class="out" readonly></textarea></div>
         <div class="actions">
-          <button type="button" class="btn btn-dark" id="copy">Copy message</button>
+          <button type="submit" class="btn btn-dark" id="send" hidden>Send enquiry</button>
+          <button type="button" class="btn" id="copy">Copy message</button>
           <a class="btn" id="wa" href="#contact" hidden>Open WhatsApp</a>
           <a class="btn" id="mail" href="#contact" hidden>Email us</a>
         </div>
+        <input type="text" id="f-hp" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0">
         <p class="status" id="status" role="status"></p>
       </form>
     </div>
@@ -456,6 +458,8 @@ main,.foot{position:relative;z-index:2}
 (function(){
   // Add your details here to show the WhatsApp and Email buttons. whatsapp: country code + number, digits only.
   var CONTACT = { email: 'diflexit@gmail.com', whatsapp: '' };
+  // Paste your Google Apps Script web app URL here to turn on the Send enquiry button.
+  var ENDPOINT = 'https://script.google.com/macros/s/AKfycbxnK3qGSqju6kTDrqvYzTLlYi8zF2js12_5bwDbcoOvOFOokErqaagT9R9EeheRzEG8Fw/exec';
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   function clamp(v, a, b){ return Math.max(a, Math.min(b, v)); }
 
@@ -654,7 +658,20 @@ main,.foot{position:relative;z-index:2}
     if (CONTACT.email) { mail.hidden = false; mail.href = 'mailto:' + CONTACT.email + '?subject=' + encodeURIComponent('Project enquiry') + '&body=' + encodeURIComponent(t); }
   }
   ['input', 'change'].forEach(function(ev){ [f.name, f.phone, f.need, f.note].forEach(function(el){ el.addEventListener(ev, renderMsg); }); });
-  document.getElementById('form').addEventListener('submit', function(e){ e.preventDefault(); });
+  var send = document.getElementById('send');
+  if (ENDPOINT) send.hidden = false;
+  document.getElementById('form').addEventListener('submit', function(e){
+    e.preventDefault();
+    if (!ENDPOINT) return;
+    if (document.getElementById('f-hp').value) return;
+    if (!f.name.value.trim() || !f.phone.value.trim() && !f.note.value.trim()) { status.textContent = 'Please add your name and a phone number or a few details.'; return; }
+    send.disabled = true; status.textContent = 'Sending...';
+    var payload = { name: f.name.value.trim(), phone: f.phone.value.trim(), need: f.need.value, modules: chosen().join(', '), note: f.note.value.trim(), message: f.out.value };
+    fetch(ENDPOINT, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(payload) })
+      .then(function(){ status.textContent = 'Thank you. We have your enquiry and will reply soon.'; document.getElementById('form').reset(); renderMsg(); })
+      .catch(function(){ status.textContent = 'Could not send. Please copy the message and email us instead.'; })
+      .then(function(){ send.disabled = false; });
+  });
   document.getElementById('copy').addEventListener('click', function(){
     var t = f.out.value;
     function fail(){ f.out.focus(); f.out.select(); status.textContent = 'Select the message above and copy it.'; }
