@@ -218,6 +218,15 @@ main,.foot{position:relative;z-index:2}
 .form .btn{color:var(--ink);border-color:var(--ink)}
 .form .btn-dark{background:var(--ink);color:#fff}
 .status{font-size:14px;color:var(--soft2);min-height:1.4em}
+.mm{position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(5,11,24,.72)}
+.mm-card{position:relative;background:#fff;color:var(--ink);border-radius:8px;padding:clamp(22px,4vw,34px);max-width:460px;width:100%;box-shadow:0 30px 80px rgba(0,0,0,.5)}
+.mm-card h3{margin:0 28px 10px 0;font:500 24px/1.2 var(--serif)}
+.mm-card p{margin:0 0 16px;color:var(--soft2);font-size:16px}
+.mm-card p b{color:var(--ink);font-weight:500}
+.mm-acts{display:flex;flex-direction:column;gap:10px;align-items:stretch}
+.mm-card .btn{color:var(--ink);border-color:var(--ink);justify-content:center;text-align:center}
+.mm-card .btn-dark{background:var(--ink);color:#fff}
+.mm-x{position:absolute;top:10px;right:14px;border:0;background:none;font-size:30px;line-height:1;color:var(--soft2);cursor:pointer}
 .foot{padding:28px var(--gutter) 96px;border-top:1px solid var(--line);color:var(--soft);font-size:14px}
 .foot div{max-width:1280px;margin:0 auto;display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px}
 .js [data-r]{opacity:0;transform:translateY(30px);transition:opacity .9s,transform .9s cubic-bezier(.2,.8,.2,1)}
@@ -433,7 +442,6 @@ main,.foot{position:relative;z-index:2}
         <div class="field"><label for="f-out">Your message</label><textarea id="f-out" class="out" readonly></textarea></div>
         <div class="actions">
           <button type="submit" class="btn btn-dark" id="send" hidden>Send enquiry</button>
-          <button type="button" class="btn" id="copy">Copy message</button>
           <a class="btn" id="wa" href="#contact" hidden>Open WhatsApp</a>
           <a class="btn" id="mail" href="#contact" hidden>Email us</a>
         </div>
@@ -442,6 +450,19 @@ main,.foot{position:relative;z-index:2}
       </form>
     </div>
   </section>
+  <div class="mm" id="mm" role="dialog" aria-modal="true" aria-labelledby="mm-t" hidden>
+    <div class="mm-card">
+      <button type="button" class="mm-x" id="mm-x" aria-label="Close">&times;</button>
+      <h3 id="mm-t">Could not open your email app?</h3>
+      <p>No problem. Use any of these to reach us at <b id="mm-addr"></b>.</p>
+      <div class="mm-acts">
+        <a class="btn btn-dark" id="mm-gmail" href="#" target="_blank" rel="noopener">Open Gmail</a>
+        <button type="button" class="btn" id="mm-copyaddr">Copy email address</button>
+        <button type="button" class="btn" id="mm-copymsg">Copy message</button>
+      </div>
+      <p class="status" id="mm-status" role="status"></p>
+    </div>
+  </div>
 </div>
 </main>
 
@@ -672,11 +693,31 @@ main,.foot{position:relative;z-index:2}
       .catch(function(){ status.textContent = 'Could not send. Please copy the message and email us instead.'; })
       .then(function(){ send.disabled = false; });
   });
-  document.getElementById('copy').addEventListener('click', function(){
+  /* ---------- email fallback popup ---------- */
+  var mm = document.getElementById('mm'), mmStatus = document.getElementById('mm-status');
+  function copyText(t, done){
+    function fail(){ mmStatus.textContent = 'Could not copy. Please select and copy it manually.'; }
+    try { navigator.clipboard.writeText(t).then(function(){ mmStatus.textContent = done; }, fail); } catch (err) { fail(); }
+  }
+  function openMM(){
     var t = f.out.value;
-    function fail(){ f.out.focus(); f.out.select(); status.textContent = 'Select the message above and copy it.'; }
-    try { navigator.clipboard.writeText(t).then(function(){ status.textContent = 'Copied. Paste it into WhatsApp, email or an Instagram message.'; }, fail); } catch (err) { fail(); }
+    document.getElementById('mm-addr').textContent = CONTACT.email;
+    document.getElementById('mm-gmail').href = 'https://mail.google.com/mail/?view=cm&fs=1&to=' + encodeURIComponent(CONTACT.email) + '&su=' + encodeURIComponent('Project enquiry') + '&body=' + encodeURIComponent(t);
+    mmStatus.textContent = ''; mm.hidden = false;
+  }
+  function closeMM(){ mm.hidden = true; }
+  mail.addEventListener('click', function(){
+    var left = false;
+    function gone(){ left = true; }
+    window.addEventListener('blur', gone, { once: true });
+    document.addEventListener('visibilitychange', gone, { once: true });
+    setTimeout(function(){ window.removeEventListener('blur', gone); document.removeEventListener('visibilitychange', gone); if (!left) openMM(); }, 1500);
   });
+  document.getElementById('mm-x').addEventListener('click', closeMM);
+  mm.addEventListener('click', function(e){ if (e.target === mm) closeMM(); });
+  document.addEventListener('keydown', function(e){ if (e.key === 'Escape') closeMM(); });
+  document.getElementById('mm-copyaddr').addEventListener('click', function(){ copyText(CONTACT.email, 'Email address copied.'); });
+  document.getElementById('mm-copymsg').addEventListener('click', function(){ copyText(f.out.value, 'Message copied. Paste it into your email.'); });
   document.getElementById('useMods').addEventListener('click', function(){
     var list = chosen();
     f.need.value = 'an ERP system';
