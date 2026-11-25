@@ -699,7 +699,7 @@ main,.foot{position:relative;z-index:2}
     send.disabled = true; status.textContent = 'Sending...';
     var payload = { name: f.name.value.trim(), phone: f.phone.value.trim(), need: f.need.value, modules: chosen().join(', '), note: f.note.value.trim(), message: f.out.value };
     fetch(ENDPOINT, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(payload) })
-      .then(function(){ status.textContent = ''; document.getElementById('form').reset(); renderMsg(); openTY(); })
+      .then(function(){ status.textContent = 'Thank you! Your enquiry has been sent. We will reply soon.'; document.getElementById('form').reset(); renderMsg(); openTY(); })
       .catch(function(){ status.textContent = 'Could not send. Please copy the message and email us instead.'; })
       .then(function(){ send.disabled = false; });
   });
@@ -717,7 +717,11 @@ main,.foot{position:relative;z-index:2}
   }
   function closeMM(){ mm.hidden = true; }
   var ty = document.getElementById('ty');
-  function openTY(){ ty.hidden = false; document.getElementById('ty-ok').focus(); }
+  function openTY(){
+    ty.hidden = false;
+    try { document.getElementById('ty-ok').focus(); } catch (err) {}
+    setTimeout(function(){ var r = ty.getBoundingClientRect(); if (ty.hidden || r.width < 50 || r.height < 50) alert('Thank you! Your enquiry has been sent. We will reply soon.'); }, 400);
+  }
   function closeTY(){ ty.hidden = true; }
   document.getElementById('ty-x').addEventListener('click', closeTY);
   document.getElementById('ty-ok').addEventListener('click', closeTY);
