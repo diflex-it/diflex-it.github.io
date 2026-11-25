@@ -416,7 +416,7 @@ main,.foot{position:relative;z-index:2}
       <div>
         <p class="eyebrow" style="margin-bottom:18px">Start a project</p>
         <h1 class="h2">Tell us what you <em>need.</em></h1>
-        <p class="lede2">Fill in the form and your message is written for you. Copy it and send it to us, and we will reply with the next step.</p>
+        <p class="lede2">Fill in the form and send it to us. We will reply with the next step.</p>
         <div class="cfacts">
           <span><b>Based in</b> Kozhikode (Calicut), Kerala</span>
           <span id="contactLines"></span>
@@ -450,6 +450,15 @@ main,.foot{position:relative;z-index:2}
       </form>
     </div>
   </section>
+  <div class="mm" id="ty" role="dialog" aria-modal="true" aria-labelledby="ty-t" hidden>
+    <div class="mm-card" style="text-align:center">
+      <button type="button" class="mm-x" id="ty-x" aria-label="Close">&times;</button>
+      <div style="width:56px;height:56px;margin:0 auto 14px;border-radius:50%;background:var(--sky);color:var(--teal);display:flex;align-items:center;justify-content:center;font-size:30px;font-weight:600">&#10003;</div>
+      <h3 id="ty-t" style="margin-right:0">Thank you!</h3>
+      <p>We have received your enquiry and will reply to you soon.</p>
+      <div class="mm-acts"><button type="button" class="btn btn-dark" id="ty-ok">Done</button></div>
+    </div>
+  </div>
   <div class="mm" id="mm" role="dialog" aria-modal="true" aria-labelledby="mm-t" hidden>
     <div class="mm-card">
       <button type="button" class="mm-x" id="mm-x" aria-label="Close">&times;</button>
@@ -689,7 +698,7 @@ main,.foot{position:relative;z-index:2}
     send.disabled = true; status.textContent = 'Sending...';
     var payload = { name: f.name.value.trim(), phone: f.phone.value.trim(), need: f.need.value, modules: chosen().join(', '), note: f.note.value.trim(), message: f.out.value };
     fetch(ENDPOINT, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(payload) })
-      .then(function(){ status.textContent = 'Thank you. We have your enquiry and will reply soon.'; document.getElementById('form').reset(); renderMsg(); })
+      .then(function(){ status.textContent = ''; document.getElementById('form').reset(); renderMsg(); openTY(); })
       .catch(function(){ status.textContent = 'Could not send. Please copy the message and email us instead.'; })
       .then(function(){ send.disabled = false; });
   });
@@ -706,6 +715,12 @@ main,.foot{position:relative;z-index:2}
     mmStatus.textContent = ''; mm.hidden = false;
   }
   function closeMM(){ mm.hidden = true; }
+  var ty = document.getElementById('ty');
+  function openTY(){ ty.hidden = false; document.getElementById('ty-ok').focus(); }
+  function closeTY(){ ty.hidden = true; }
+  document.getElementById('ty-x').addEventListener('click', closeTY);
+  document.getElementById('ty-ok').addEventListener('click', closeTY);
+  ty.addEventListener('click', function(e){ if (e.target === ty) closeTY(); });
   mail.addEventListener('click', function(){
     var left = false;
     function gone(){ left = true; }
@@ -715,7 +730,7 @@ main,.foot{position:relative;z-index:2}
   });
   document.getElementById('mm-x').addEventListener('click', closeMM);
   mm.addEventListener('click', function(e){ if (e.target === mm) closeMM(); });
-  document.addEventListener('keydown', function(e){ if (e.key === 'Escape') closeMM(); });
+  document.addEventListener('keydown', function(e){ if (e.key === 'Escape') { closeMM(); closeTY(); } });
   document.getElementById('mm-copyaddr').addEventListener('click', function(){ copyText(CONTACT.email, 'Email address copied.'); });
   document.getElementById('mm-copymsg').addEventListener('click', function(){ copyText(f.out.value, 'Message copied. Paste it into your email.'); });
   document.getElementById('useMods').addEventListener('click', function(){
