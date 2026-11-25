@@ -445,7 +445,7 @@ main,.foot{position:relative;z-index:2}
           <a class="btn" id="wa" href="#contact" hidden>Open WhatsApp</a>
           <a class="btn" id="mail" href="#contact" hidden>Email us</a>
         </div>
-        <input type="text" id="f-hp" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0">
+        <input type="text" id="f-hp" name="zz_trap_9x" tabindex="-1" autocomplete="new-password" data-lpignore="true" data-1p-ignore="true" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0">
         <p class="status" id="status" role="status"></p>
       </form>
     </div>
@@ -694,7 +694,7 @@ main,.foot{position:relative;z-index:2}
   document.getElementById('form').addEventListener('submit', function(e){
     e.preventDefault();
     if (!ENDPOINT) return;
-    if (document.getElementById('f-hp').value) return;
+    if (document.getElementById('f-hp').value) { document.getElementById('f-hp').value = ''; }
     if (!f.name.value.trim() || !f.phone.value.trim() && !f.note.value.trim()) { status.textContent = 'Please add your name and a phone number or a few details.'; return; }
     send.disabled = true; status.textContent = 'Sending...';
     var payload = { name: f.name.value.trim(), phone: f.phone.value.trim(), need: f.need.value, modules: chosen().join(', '), note: f.note.value.trim(), message: f.out.value };
