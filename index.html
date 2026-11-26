@@ -72,7 +72,7 @@ main,.foot{position:relative;z-index:2}
 .wipe.in{transform:none;transition:transform .5s cubic-bezier(.7,0,.2,1);pointer-events:auto}
 .wipe.out{transform:translateY(-100%);transition:transform .55s cubic-bezier(.7,0,.2,1)}
 .toplogo{position:absolute;top:calc(clamp(22px,5vh,48px) - 6px);left:var(--gutter);z-index:30;display:flex;align-items:center;gap:10px;text-decoration:none;font:700 clamp(30px,2.8vw,40px)/1 var(--serif);letter-spacing:-.06em;color:#fff}
-.toplogo svg{width:1.05em;height:1.05em;overflow:visible;filter:drop-shadow(0 0 10px rgba(45,212,191,.25))}
+.toplogo svg{width:1.05em;height:1.05em;overflow:visible;}
 
 /* home: scroll-driven gallery */
 .gal-track{position:relative}
@@ -80,7 +80,6 @@ main,.foot{position:relative;z-index:2}
 .info{display:flex;justify-content:space-between;gap:24px;padding:clamp(22px,5vh,48px) var(--gutter) 0;position:relative;z-index:20}
 .info .left{max-width:30em;padding-top:clamp(62px,9vh,84px)}
 .eyebrow{display:flex;align-items:center;gap:10px;margin:0 0 14px;font:500 12px/1 var(--body);letter-spacing:.22em;text-transform:uppercase;color:var(--teal-text)}
-.eyebrow::before{content:'';width:24px;height:1.5px;background:currentColor;opacity:.8}
 .info .right .eyebrow{justify-content:flex-end;color:var(--soft)}
 .info .right .t{font-size:clamp(20px,2vw,28px);font-weight:500;letter-spacing:-.02em;color:rgba(234,242,251,.6)}
 .info .desc,.info .meta,.info .right{transition:opacity .3s ease,transform .5s var(--ease)}
@@ -100,7 +99,7 @@ main,.foot{position:relative;z-index:2}
 .prog i{position:absolute;inset:0;background:var(--mint);transform-origin:left;transform:scaleX(0)}
 .stage{flex:1;position:relative;--w:clamp(170px,min(23vw,36vh),330px);touch-action:pan-y;cursor:grab;user-select:none;-webkit-user-select:none}
 .card{position:absolute;left:50%;top:50%;width:var(--w);height:var(--w);margin:calc(var(--w) / -2) 0 0 calc(var(--w) / -2);padding:6px;border:0;background:#fff;box-shadow:0 24px 50px rgba(0,0,0,.5),0 0 0 1px rgba(255,255,255,.2);cursor:pointer;will-change:transform;animation:floaty 7s ease-in-out infinite;animation-delay:var(--fd,0s)}
-.card[aria-current="true"]{box-shadow:0 24px 60px rgba(0,0,0,.55),0 0 70px rgba(45,212,191,.28)}
+.card[aria-current="true"]{box-shadow:0 24px 60px rgba(0,0,0,.55)}
 @keyframes floaty{0%,100%{translate:0 0}50%{translate:0 -9px}}
 .art{width:100%;height:100%;display:block;pointer-events:none;overflow:hidden}
 .art svg{width:100%;height:100%;display:block;transform:translate(calc(var(--mx,0) * -7px),calc(var(--my,0) * -7px)) scale(1.08);transition:transform .35s ease-out}
@@ -405,12 +404,12 @@ main,.foot{position:relative;z-index:2}
         <div class="tile" style="--sx:10px;--sy:8px;--sr:-6deg;--d:320ms"><span class="a">Notebook</span><span class="b">HR</span></div>
         <div class="tile" style="--sx:-12px;--sy:-8px;--sr:3deg;--d:400ms"><span class="a">Sticky note</span><span class="b">Reports</span></div>
       </div>
-      <div class="mess-cap"><span><span class="a">Everything everywhere</span><span class="b">One system</span></span><button type="button" class="btn" id="replay" style="min-height:42px;font-size:15px">Make it messy</button></div>
+      <div class="mess-cap"><span><span class="a">Spread across apps</span><span class="b">One system</span></span><button type="button" class="btn" id="replay" style="min-height:42px;font-size:15px">Make it messy</button></div>
       <div class="benefits">
         <div class="ben"><h3>Know your stock</h3><p>See what you have, what sold and what to reorder, updated as it happens.</p></div>
         <div class="ben"><h3>Know your numbers</h3><p>Sales, expenses and profit reports ready whenever you need them.</p></div>
         <div class="ben"><h3>Save hours</h3><p>Invoices, reminders and approvals run on their own instead of by hand.</p></div>
-        <div class="ben"><h3>One source of truth</h3><p>Sales, purchase, stock, accounts and HR share the same data, so nobody types it twice.</p></div>
+        <div class="ben"><h3>Enter it once</h3><p>Sales, purchase, stock, accounts and HR share the same data, so nobody types it twice.</p></div>
       </div>
       <div style="margin-top:56px"><a class="btn btn-dark" href="#services">Shape your system</a></div>
     </div>
@@ -509,14 +508,14 @@ main,.foot{position:relative;z-index:2}
     return l + c + '<circle class="hubd" cx="100" cy="100" r="27" fill="#0B1F3A"/><circle cx="100" cy="100" r="10" fill="#FFC857"/>'; }
   function bars(list, cls){ return list.map(function(b, i){ return '<rect class="' + cls + '" style="--i:' + i + '" x="' + b[0] + '" y="' + b[1] + '" width="' + b[2] + '" height="' + (b[4] || 8) + '" rx="4" fill="' + b[3] + '"/>'; }).join(''); }
   var S = [
-    { t:'ERP Solutions', c:'Business systems', need:'an ERP system', d:'Run sales, stock, accounts and HR in one system built around how your business really works.', bg:'#FFC857', art:nodes() },
-    { t:'AI Automations', c:'Automation', need:'AI automations', d:'Put repetitive work on autopilot: data entry, reports, reminders and follow-ups.', bg:'#0B1F3A',
-      art:'<path class="st" d="M100 36C104 80 120 96 164 100C120 104 104 120 100 164C96 120 80 104 36 100C80 96 96 80 100 36Z" fill="#8B7CFF"/><path class="st2" d="M158 34C159 46 164 51 176 52C164 53 159 58 158 70C157 58 152 53 140 52C152 51 157 46 158 34Z" fill="#fff"/><circle cx="44" cy="156" r="6" fill="#2DD4BF"/><circle cx="62" cy="168" r="3.5" fill="#FFC857"/>' },
-    { t:'Custom Software', c:'Engineering', need:'custom software', d:'Web apps, dashboards and internal tools designed for the way your team works.', bg:'#FF7A59',
+    { t:'ERP Solutions', c:'Business systems', need:'an ERP system', d:'Sales, stock, accounts and HR in one system, set up for the way you already work.', bg:'#FFC857', art:nodes() },
+    { t:'AI Automations', c:'Automation', need:'AI automations', d:'Data entry, reports, reminders and follow-ups that run by themselves, so your staff can do other work.', bg:'#0B1F3A',
+      art:'<rect class="bk" style="--i:0" x="20" y="82" width="38" height="38" rx="7" fill="#8B7CFF"/><rect x="29" y="94" width="20" height="4" rx="2" fill="#fff"/><rect x="29" y="103" width="13" height="4" rx="2" fill="#fff"/><path d="M64 101h12M71 95l6 6-6 6" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/><rect class="bk" style="--i:1" x="82" y="82" width="38" height="38" rx="7" fill="#FFC857"/><circle cx="101" cy="101" r="8" fill="none" stroke="#0B1F3A" stroke-width="3.5"/><path d="M101 96v5l3 3" fill="none" stroke="#0B1F3A" stroke-width="3" stroke-linecap="round"/><path d="M126 101h12M133 95l6 6-6 6" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/><rect class="bk" style="--i:2" x="144" y="82" width="38" height="38" rx="7" fill="#2DD4BF"/><path d="M154 101l6 6 12-12" fill="none" stroke="#0B1F3A" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>' },
+    { t:'Custom Software', c:'Engineering', need:'custom software', d:'Web apps, dashboards and internal tools for jobs that ready-made software does not handle.', bg:'#FF7A59',
       art:'<rect x="28" y="44" width="144" height="112" rx="10" fill="#fff"/><rect x="28" y="44" width="144" height="22" rx="10" fill="#0B1F3A"/><circle cx="42" cy="55" r="3.5" fill="#2DD4BF"/><circle cx="54" cy="55" r="3.5" fill="#fff"/>' + bars([[42,80,46,'#FF7A59'],[96,80,62,'#0B1F3A'],[56,98,70,'#0B1F3A'],[134,98,24,'#FF7A59'],[56,116,40,'#FF7A59'],[42,134,84,'#0B1F3A']], 'ln') },
-    { t:'Websites', c:'Web design', need:'a website', d:'Fast, mobile-friendly websites that turn visitors into customers.', bg:'#4DA3FF',
+    { t:'Websites', c:'Web design', need:'a website', d:'Websites that load quickly, work well on phones and tell people clearly what you do.', bg:'#4DA3FF',
       art:'<rect x="28" y="36" width="144" height="128" rx="8" fill="#fff"/><rect x="28" y="36" width="144" height="16" rx="8" fill="#0B1F3A"/><rect class="bk" style="--i:0" x="38" y="62" width="124" height="46" rx="4" fill="#0B1F3A"/><rect x="48" y="74" width="56" height="9" rx="4.5" fill="#fff"/><rect x="48" y="90" width="34" height="9" rx="4.5" fill="#FFC857"/><rect class="bk" style="--i:1" x="38" y="118" width="38" height="36" rx="4" fill="#4DA3FF"/><rect class="bk" style="--i:2" x="81" y="118" width="38" height="36" rx="4" fill="#FFC857"/><rect class="bk" style="--i:3" x="124" y="118" width="38" height="36" rx="4" fill="#0B1F3A"/>' },
-    { t:'Mobile Apps', c:'Android and iOS', need:'a mobile app', d:'Smooth Android and iOS apps built with Flutter.', bg:'#E9E6FF',
+    { t:'Mobile Apps', c:'Android and iOS', need:'a mobile app', d:'Android and iOS apps built with Flutter, from one codebase.', bg:'#E9E6FF',
       art:'<rect x="66" y="24" width="68" height="152" rx="15" fill="#0B1F3A"/><rect x="72" y="36" width="56" height="128" rx="8" fill="#fff"/>' + bars([[78,44,44,'#8B7CFF',30],[78,80,44,'#2DD4BF',14],[78,100,44,'#D8F4EE',14],[78,120,30,'#0B1F3A',8]], 'sc') + '<rect x="88" y="29" width="24" height="4" rx="2" fill="#2DD4BF"/>' },
     { t:'Integrations & Hosting', c:'Infrastructure', need:'integrations or hosting setup', d:'API integrations, plus domain, DNS and hosting set up properly so everything stays online.', bg:'#0D9488',
       art:'<path class="cl" d="M56 112a24 24 0 0 1 4-47a38 38 0 0 1 74 7a22 22 0 0 1 2 40Z" fill="#fff"/><rect x="80" y="126" width="40" height="12" rx="6" fill="#0B1F3A"/><rect x="80" y="144" width="40" height="12" rx="6" fill="#0B1F3A"/><circle class="bl" style="--i:0" cx="90" cy="132" r="2.6" fill="#2DD4BF"/><circle class="bl" style="--i:1" cx="90" cy="150" r="2.6" fill="#FFC857"/><path d="M100 112v14" stroke="#fff" stroke-width="4"/>' }
