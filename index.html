@@ -123,6 +123,9 @@ main,.foot{position:relative;z-index:2}
 .hint i{width:1px;height:34px;background:#fff;transform-origin:top;animation:drip 1.8s ease-in-out infinite}
 @keyframes drip{0%{transform:scaleY(0)}60%{transform:scaleY(1);opacity:1}100%{transform:scaleY(1);opacity:0}}
 .hint.gone{opacity:0}
+.swipe-dots{display:none;position:absolute;left:0;right:0;bottom:92px;justify-content:center;gap:8px;z-index:15;pointer-events:none}
+.swipe-dots i{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.28);transition:width .3s var(--ease),background .3s}
+.swipe-dots i.on{width:20px;border-radius:3px;background:var(--mint)}
 .home-end{padding:clamp(90px,14vw,170px) 0;text-align:center}
 .home-end .h2{max-width:14em;margin:0 auto}
 .home-end .row{margin-top:36px;display:flex;flex-wrap:wrap;gap:12px;justify-content:center}
@@ -255,8 +258,13 @@ main,.foot{position:relative;z-index:2}
 }
 @media (max-width:560px){
   body{font-size:16px}
-  .stage{--w:clamp(190px,62vw,270px)}
+  .stage{--w:clamp(180px,54vw,240px);margin-bottom:84px}
   .t{font-size:34px}
+  .info{padding-top:88px}
+  .desc{font-size:16px;margin-top:12px}
+  .meta{margin-top:18px}
+  .hint{display:none!important}
+  .swipe-dots{display:flex}
   .benefits,.steps,.row2{grid-template-columns:1fr}
   .mess{grid-template-columns:1fr 1fr}
   .dock a{padding:8px 9px;font-size:14px}
@@ -294,6 +302,7 @@ main,.foot{position:relative;z-index:2}
       </div>
       <div class="stage" id="stage" role="group" aria-label="Services. Scroll, use the arrow keys or click a card."></div>
       <p class="hint" id="hint" aria-hidden="true"><i></i>Scroll</p>
+      <div class="swipe-dots" id="dots" aria-hidden="true"></div>
     </section>
   </div>
   <section class="home-end">
@@ -556,7 +565,8 @@ main,.foot{position:relative;z-index:2}
   track.style.height = 'calc(max(100svh, 560px) + ' + ((N - 1) * 85) + 'vh)';
   var cards = [], info = document.getElementById('info');
   var title = document.getElementById('svcTitle'), desc = document.getElementById('svcDesc'), cat = document.getElementById('svcCat'), num = document.getElementById('svcNum'), link = document.getElementById('svcLink');
-  var bar = document.getElementById('progBar'), hint = document.getElementById('hint');
+  var bar = document.getElementById('progBar'), hint = document.getElementById('hint'), dots = document.getElementById('dots');
+  for (var di = 0; di < N; di++) dots.appendChild(document.createElement('i'));
   S.forEach(function(s, i){
     var b = document.createElement('button'); b.type = 'button'; b.className = 'card'; b.setAttribute('aria-label', s.t);
     b.style.setProperty('--fd', (-i * 1.15) + 's');
@@ -582,16 +592,17 @@ main,.foot{position:relative;z-index:2}
   function setActive(i){
     var first = idx < 0; idx = i; setTitle();
     cards.forEach(function(c, k){ c.setAttribute('aria-current', k === idx ? 'true' : 'false'); c.tabIndex = 0; });
+    Array.prototype.forEach.call(dots.children, function(d, k){ d.classList.toggle('on', k === idx); });
     if (first || reduce) { setText(); return; }
     info.classList.add('swap');
     setTimeout(function(){ setText(); info.classList.remove('swap'); }, 200);
   }
   function render(now){
-    var w = cards[0].offsetWidth, k = window.innerWidth < 640 ? .7 : 1, H = stage.offsetHeight;
+    var w = cards[0].offsetWidth, phone = window.innerWidth < 640, k = phone ? .62 : 1, H = stage.offsetHeight;
     cards.forEach(function(c, i){
       var d = i - cur; d = (((d + N / 2) % N) + N) % N - N / 2;
       var a = Math.abs(d), sg = d < 0 ? -1 : 1;
-      var x = sg * at(a, X) * w * k, y = at(a, Y) * w, r = sg * at(a, R), sc = at(a, SC), op = a <= 2 ? 1 : Math.max(0, 3 - a);
+      var x = sg * at(a, X) * w * k, y = at(a, Y) * w, r = sg * at(a, R), sc = at(a, SC), op = a <= 2 ? 1 : Math.max(0, 3 - a); if (phone) op *= a < 1 ? 1 - a * .35 : Math.max(0, .65 - (a - 1) * .5);
       if (!introDone) { var ip = ease(clamp((now - t0 - a * 140 - 60) / 800, 0, 1)); y += (1 - ip) * H * .9; op *= ip; }
       c.style.transform = 'translate(' + x.toFixed(1) + 'px,' + y.toFixed(1) + 'px) rotate(' + r.toFixed(2) + 'deg) scale(' + sc.toFixed(3) + ')';
       c.style.opacity = op.toFixed(3); c.style.zIndex = Math.round(100 - a * 10); c.style.pointerEvents = op > .5 ? 'auto' : 'none';
@@ -625,6 +636,15 @@ main,.foot{position:relative;z-index:2}
     window.scrollBy(0, -e.movementX * (range() / (N - 1)) / (1.1 * cards[0].offsetWidth));
   });
   window.addEventListener('pointerup', function(){ down = false; setTimeout(function(){ moved = false; }, 0); });
+
+  /* swiping left or right on a touch screen moves one card */
+  var sx = 0, sy = 0, swiping = false;
+  stage.addEventListener('touchstart', function(e){ var t = e.touches[0]; sx = t.clientX; sy = t.clientY; swiping = true; }, { passive: true });
+  stage.addEventListener('touchend', function(e){
+    if (!swiping) return; swiping = false;
+    var t = e.changedTouches[0], dx = t.clientX - sx, dy = t.clientY - sy;
+    if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy) * 1.2) { moved = true; scrollToCard(idx + (dx < 0 ? 1 : -1)); setTimeout(function(){ moved = false; }, 350); }
+  }, { passive: true });
 
   /* depth: drawings drift against their frames, and the logo's dot follows the pointer */
   window.addEventListener('pointermove', function(e){
