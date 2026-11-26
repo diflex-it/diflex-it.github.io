@@ -78,18 +78,25 @@ main,.foot{position:relative;z-index:2}
 .gal-track{position:relative}
 .gallery{position:sticky;top:0;height:var(--gh);overflow:hidden;display:flex;flex-direction:column}
 .info{display:flex;justify-content:space-between;gap:24px;padding:clamp(22px,5vh,48px) var(--gutter) 0;position:relative;z-index:20}
-.info .left{max-width:27em}
+.info .left{max-width:30em}
+.eyebrow{display:flex;align-items:center;gap:10px;margin:0 0 14px;font:500 12px/1 var(--body);letter-spacing:.22em;text-transform:uppercase;color:var(--teal-text)}
+.eyebrow::before{content:'';width:24px;height:1.5px;background:currentColor;opacity:.8}
+.info .right .eyebrow{justify-content:flex-end;color:var(--soft)}
+.info .right .t{font-size:clamp(20px,2vw,28px);font-weight:500;letter-spacing:-.02em;color:rgba(234,242,251,.6)}
 .info .desc,.info .meta,.info .right{transition:opacity .3s ease,transform .5s var(--ease)}
-.info .right{text-align:right}
+.info .right{text-align:right;padding-top:2px}
 .info.swap .desc,.info.swap .meta,.info.swap .right{opacity:0;transform:translateY(8px)}
 .t{font-family:var(--serif);font-size:clamp(28px,3.2vw,44px);line-height:1.05;letter-spacing:-.035em;font-weight:500}
 .lt{display:inline-block;animation:letter .7s cubic-bezier(.2,.9,.25,1.1) both;animation-delay:calc(var(--i) * 24ms)}
 @keyframes letter{from{transform:translateY(75%) rotate(5deg);opacity:0}to{transform:none;opacity:1}}
-.desc{margin-top:14px;font-size:clamp(15px,1.45vw,18px);line-height:1.5;color:var(--soft);max-width:24em}
-.meta{margin-top:16px;display:flex;align-items:center;gap:18px;font-size:15px}
-.meta a{text-decoration:none;border-bottom:1.5px solid #fff;padding-bottom:1px;transition:color .35s ease,border-color .35s ease}
+.desc{margin-top:16px;font-size:clamp(15px,1.45vw,18px);line-height:1.6;color:rgba(234,242,251,.68);max-width:25em}
+.meta{margin-top:24px;display:flex;align-items:center;gap:22px;font-size:15px}
+#svcNum{font-size:13px;letter-spacing:.12em;font-variant-numeric:tabular-nums;color:var(--soft)}
+.meta a{text-decoration:none;font-weight:500;color:#fff;border-bottom:1.5px solid rgba(255,255,255,.45);padding-bottom:3px;transition:color .35s ease,border-color .35s ease}
+.meta a::after{content:'\2192';display:inline-block;margin-left:8px;transition:transform .35s var(--ease)}
+.meta a:hover::after{transform:translateX(4px)}
 .meta a:hover{color:var(--mint);border-color:var(--mint)}
-.prog{margin-top:16px;width:120px;height:2px;background:rgba(255,255,255,.18);position:relative;overflow:hidden}
+.prog{margin-top:18px;width:200px;height:2px;background:rgba(255,255,255,.18);position:relative;overflow:hidden}
 .prog i{position:absolute;inset:0;background:var(--mint);transform-origin:left;transform:scaleX(0)}
 .stage{flex:1;position:relative;--w:clamp(170px,min(23vw,36vh),330px);touch-action:pan-y;cursor:grab;user-select:none;-webkit-user-select:none}
 .card{position:absolute;left:50%;top:50%;width:var(--w);height:var(--w);margin:calc(var(--w) / -2) 0 0 calc(var(--w) / -2);padding:6px;border:0;background:#fff;box-shadow:0 24px 50px rgba(0,0,0,.5),0 0 0 1px rgba(255,255,255,.2);cursor:pointer;will-change:transform;animation:floaty 7s ease-in-out infinite;animation-delay:var(--fd,0s)}
@@ -277,12 +284,13 @@ main,.foot{position:relative;z-index:2}
       </a>
       <div class="info" id="info" aria-live="polite">
         <div class="left">
+          <p class="eyebrow">Our services</p>
           <h1 class="t" id="svcTitle" aria-label="ERP Solutions">ERP Solutions</h1>
           <p class="desc" id="svcDesc"></p>
           <div class="meta"><span id="svcNum">01 / 06</span><a href="#contact" id="svcLink">Enquire about this</a></div>
           <div class="prog" aria-hidden="true"><i id="progBar"></i></div>
         </div>
-        <div class="right"><p class="t" id="svcCat">Business systems</p></div>
+        <div class="right"><p class="eyebrow">Category</p><p class="t" id="svcCat">Business systems</p></div>
       </div>
       <div class="stage" id="stage" role="group" aria-label="Services. Scroll, use the arrow keys or click a card."></div>
       <p class="hint" id="hint" aria-hidden="true"><i></i>Scroll</p>
